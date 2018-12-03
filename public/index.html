@@ -69,12 +69,22 @@ input:checked + .slider:before {
 </head>
 
 <body>
-<h1>Car forward movement</h1>
+<h1>Car Controller</h1>
 <p>
-	<label class = "switch">
-	<input type="checkbox" id="forward">
-	<span class="slider round"></span>
-	</label>
+  Use your keyboard to control the car
+<ul>
+  <li>W = Forward</li>
+  <li>A = Left</li>
+  <li>S = Right</li>
+  <li>D = Backward</li>
+  <li>Q = Stop</li>
+</ul>
+</p>
+
+<p>Front Distance Sensor</p>
+<input type="text" id="front-data" value="----">
+<p>
+
 
 </p>
 
@@ -115,6 +125,10 @@ document.onkeydown = function(event){
   }
   console.log(event.keyCode);
 }
+socket.on("front-distance", function(data) {
+  console.log('front data:'+data);
+  document.getElementById('front-data').value = data + "cm";
+});
 </script>
 </html>
 </body>
