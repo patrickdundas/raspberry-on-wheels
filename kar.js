@@ -35,6 +35,7 @@ rpio.open(26, rpio.OUTPUT, rpio.LOW);
 
 http.listen(8080); //listen to port 8080
 
+var newSensorData = false;
 var minimumSafeDistance = 20;
 var safetyCheckTime = 500;
 var currentFrontDistance = 1000;
@@ -71,7 +72,8 @@ setInterval(function(){
     console.log("Recieved sensor data: "+JSON.stringify(result));
     currentFrontDistance = result['front-distance'];
   });
-},1000);
+  newSensorData = true;
+},300);
 
 // function measureDistance(){
 //   rpio.write(triggerPin, rpio.HIGH);
@@ -148,6 +150,12 @@ function handler (req, res) { //create server
 
 var safetyCheck = null;
 io.sockets.on('connection', function (socket) {// WebSocket Connection
+  setInterval(function(){
+    if(newSensorData){
+      socket.emit("front-distance", currentFrontDistance);
+      newSensorData = false;
+    }
+  },500);
   socket.on('forward', function(data) {
     if(currentFrontDistance < minimumSafeDistance){
       stopAll();
